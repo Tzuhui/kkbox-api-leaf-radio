@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="position-relative" style="overflow: hidden; height: 550px">
+    <div class="position-relative playArea" style="overflow: hidden;">
       <div class="position-absolute" style="top:0;bottom:0;left:0;right:0;filter: blur(10px); min-height: 550px; background: no-repeat center center; background-size: cover;box-shadow:0 0 0 0 rgba(0,150,200,1),inset 0 0 0 1px rgba(0,150,200,1);"
       :style="{'background-image': 'url(' + messageInfo.songInfo.songPic + ')'}"></div>
       <div class="position-absolute" style="background: rgba(40, 48, 89, 0.7); left: 0; right: 0;top: 0;bottom: 0;"></div>
@@ -12,11 +12,21 @@
               <div class="timer mt-3">
                 <div id="bar" class="bar"></div>
               </div>
+              <div class="d-md-none d-block">
+                <div v-if="now == 'play'">
+                  <p class="mb-0 mt-2"> 我是 {{messageInfo.name}}，我想對 {{messageInfo.toName}} 說：</p>
+                  <p class="mb-0">{{messageInfo.message}}</p>
+                </div>
+                <div v-else>
+                  <p class="mb-0 mt-2">暫無點播歌曲，趕快來點播吧！</p>
+                  <a href="#" @click="slideBottom" class="text-dark">我想點播</a>
+                </div>
+              </div>
               <p class="mb-0 mt-2"># {{ messageInfo.songInfo.songName }}</p>
               <p class="mb-0"># {{ messageInfo.songInfo.singer }}</p>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 d-md-block d-none">
             <div class="container h-100" v-if="now == 'play'">
               <div class="bubble you animated fadeInUp">
                 我是 {{messageInfo.name}}，我想對 {{messageInfo.toName}} 說：
@@ -34,7 +44,7 @@
               <div class="h-100 text-white p-2 text-center d-flex flex-column align-items-center justify-content-center"
                 style="background: rgba(0,0,0,0.7);">
                 <h4>暫時沒有新的點播</h4>
-                <a href="#" class="btn btn-primary rounded-pill">我想點播</a>
+                <a href="#" @click="slideBottom" class="btn btn-primary rounded-pill">我想點播</a>
               </div>
             </div>
           </div>
@@ -112,6 +122,9 @@ export default {
       const bar = document.querySelector('#bar');
       let timeLimit = "30s";
       bar.style.animationDuration = timeLimit;
+    },
+    slideBottom() {
+      window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
     }
   },
   computed: {

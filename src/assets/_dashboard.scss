@@ -80,7 +80,12 @@
     display: block;
   }
 }
-
+.playArea {
+  min-height: 550px;
+  @media (max-width: 767px) {
+    min-height: 100vh;
+  }
+}
 // .slide-bg {
 //   top: 0;
 //   bottom: 0;
