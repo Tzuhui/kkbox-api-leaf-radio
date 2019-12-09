@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
     <div class="position-relative playArea" style="overflow: hidden;">
       <div class="position-absolute" style="top:0;bottom:0;left:0;right:0;filter: blur(10px); min-height: 550px; background: no-repeat center center; background-size: cover;box-shadow:0 0 0 0 rgba(0,150,200,1),inset 0 0 0 1px rgba(0,150,200,1);"
       :style="{'background-image': 'url(' + messageInfo.songInfo.songPic + ')'}"></div>
@@ -58,12 +59,15 @@
 </template>
 
 <script>
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 export default {
   name: 'PlayArea',
   props: ['data', 'load'],
   data() {
     return {
       now: '',
+      isLoading: true,
       loadFinish: this.load,
       tracks: [],
       messageInfo: {
@@ -140,6 +144,7 @@ export default {
         const vm = this;
         vm.getHotMusic().then(res => {
           if (res == 'get') {
+            vm.isLoading = false;
             if (vm.musicList.length == 0) {
               vm.playRandomMusic();
             } else {

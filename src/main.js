@@ -4,6 +4,7 @@ import VueAxios from 'vue-axios';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import { firestorePlugin } from 'vuefire';
+import Loading from 'vue-loading-overlay';
 import App from './App.vue';
 import router from './router';
 import 'bootstrap';
@@ -23,6 +24,7 @@ window.db = firebase
 
 Vue.use(firestorePlugin);
 Vue.use(VueAxios, axios);
+Vue.component('Loading', Loading);
 axios.defaults.headers.common.Authorization = `Bearer ${process.env.VUE_APP_KKBOX_Authorization}`;
 
 new Vue({
