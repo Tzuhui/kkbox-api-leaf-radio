@@ -1,4 +1,6 @@
-# kkbox-api-radio
+# kkbox-api-leaf-radio
+
+串接 KKBOX Open API 的音樂點播
 
 ## Project setup
 ```
