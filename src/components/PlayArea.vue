@@ -103,6 +103,7 @@ export default {
       vm.now = 'random';
       const num = Math.floor(Math.random()*vm.tracks.length);
       const trackID = vm.tracks[num].id;
+      vm.messageInfo.id = '';
       vm.messageInfo.songInfo.songPic = vm.tracks[num].album.images[1].url;
       vm.messageInfo.songInfo.songName = vm.tracks[num].name;
       vm.messageInfo.songInfo.singer = vm.tracks[num].album.artist.name;
@@ -111,11 +112,12 @@ export default {
     nowMusicOver() {
       const vm = this;
       if (vm.musicList.length > 0) {
-        db.ref('requestSongs/' + vm.musicList[0].id).set({
+        const nowSongID = '';
+        db.ref('requestSongs/' + vm.messageInfo.id).set({
           ...vm.musicList[0],
           isPlay: true,
         });
-        vm.musicList.shift();
+        // vm.musicList.shift();
       }
     },
     countDown() {
