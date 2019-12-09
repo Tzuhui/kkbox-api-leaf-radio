@@ -119,6 +119,7 @@ export default {
         const nowSongID = '';
         db.ref('requestSongs/' + vm.messageInfo.id).set({
           ...vm.musicList[0],
+          id: vm.messageInfo.id,
           isPlay: true,
         });
         // vm.musicList.shift();
