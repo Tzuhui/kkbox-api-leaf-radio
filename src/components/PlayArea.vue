@@ -20,7 +20,7 @@
                 </div>
                 <div v-else>
                   <p class="mb-0 mt-2">暫無點播歌曲，趕快來點播吧！</p>
-                  <a href="#" @click="slideBottom" class="text-dark">我想點播</a>
+                  <a href="#" @click.prevent="slideBottom" class="text-dark">我想點播</a>
                 </div>
               </div>
               <p class="mb-0 mt-2"># {{ messageInfo.songInfo.songName }}</p>
@@ -45,7 +45,7 @@
               <div class="h-100 text-white p-2 text-center d-flex flex-column align-items-center justify-content-center"
                 style="background: rgba(0,0,0,0.7);">
                 <h4>暫時沒有新的點播</h4>
-                <a href="#" @click="slideBottom" class="btn btn-primary rounded-pill">我想點播</a>
+                <a href="#" @click.prevent="slideBottom" class="btn btn-primary rounded-pill">我想點播</a>
               </div>
             </div>
           </div>
