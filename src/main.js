@@ -8,6 +8,7 @@ import Loading from 'vue-loading-overlay';
 import App from './App.vue';
 import router from './router';
 import 'bootstrap';
+import './bus';
 
 // Get a Firestore instance
 window.db = firebase
