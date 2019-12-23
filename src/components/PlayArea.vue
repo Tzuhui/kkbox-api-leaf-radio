@@ -52,7 +52,7 @@
         </div>
       </div>
       <div id="play-area" class="position-absolute w-100" style="bottom: -10px;">
-        <iframe src="" id="videoplayer" class="w-100 border-0" style="visibility: hidden;" allow="autoplay"></iframe>
+        <iframe src="" id="videoplayer" class="w-100 border-0" allow="autoplay" meted="meted" style="z-index: -1; position: relative;"></iframe>
       </div>
     </div>
   </div>
@@ -131,7 +131,8 @@ export default {
       bar.style.animationDuration = timeLimit;
     },
     slideBottom() {
-      window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+      const vm = this;
+      vm.$bus.$emit('slideToCreate', true);
     }
   },
   computed: {
@@ -168,7 +169,8 @@ export default {
     }
   },
   mounted() {
-    
+    const vm = this;
+    document.getElementById('videoplayer').meted = false;
   }
 };
 </script>
