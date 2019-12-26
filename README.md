@@ -27,5 +27,13 @@ npm run test
 npm run lint
 ```
 
+### Firebase Functions - 點播歌曲排行
+```
+cd functions/functions
+```
+```
+firebase deploy --only functions
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
