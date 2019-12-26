@@ -10,7 +10,12 @@ exports.stats = functions.database.ref('/requestSongs/{pushId}/songInfo')
         return typeof (snap.val()) === typeof null ? 0 : snap.val();
       });
     songRecord.then((res) => {
-      return snapshot.ref.root.child(`record/${ songInfo.songID }`).set({ times: parseInt(res) + 1 });
+      return snapshot.ref.root.child(`record/${ songInfo.songID }`).set({ 
+        times: parseInt(res) + 1,
+        songName: songInfo.songName,
+        songPic: songInfo.songPic,
+        singer: songInfo.singer,
+      });
     }).catch((err)=> {
       console.log(err);
       return false;
