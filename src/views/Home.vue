@@ -3,7 +3,7 @@
     <Alert/>
     <PlayArea msg="Welcome to Your Vue.js App" :data="requestSongsList" :load="dataLoad" />
     <OrderList :data="requestSongsList" />
-    <OrderHot/>
+    <OrderHot :data="recordList"/>
     <OrderCreate/>
     <footer class="bg-dark p-3">
       <div class="container clearfix">
@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       requestSongsList: [],
+      recordList: [],
       dataLoad: false,
     }
   },
@@ -54,10 +55,22 @@ export default {
         }
         vm.dataLoad = true;
       });
+    },
+    getSongsRecord() {
+      const vm = this;
+      const readData = db.ref('record');
+      readData.orderByChild('times').on('value', function(snapshot) {
+        if (snapshot.val()) {
+          Object.keys(snapshot.val()).forEach(ele => {
+            vm.recordList.push(snapshot.val()[ele]);
+          })
+        }
+      });
     }
   },
   mounted() {
     this.getSongsData();
+    this.getSongsRecord();
   }
 };
 </script>
