@@ -26,9 +26,10 @@ window.db = firebase
 Vue.use(firestorePlugin);
 Vue.use(VueAxios, axios);
 Vue.component('Loading', Loading);
-axios.defaults.headers.common.Authorization = `Bearer ${process.env.VUE_APP_KKBOX_Authorization}`;
-
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app');
+axios.get(`${process.env.VUE_APP_FIREBASE_APIBASEURL}/kkOauth`).then(res => {
+  axios.defaults.headers.common.Authorization = `Bearer ${res.data.access_token}`;
+  new Vue({
+    router,
+    render: h => h(App),
+  }).$mount('#app');
+})
