@@ -5,8 +5,8 @@
 
 ## 設置環境變數
 ```
-functions:config:set kkbox.app_id=YOUR_APP_ID
-functions:config:set kkbox.secret=YOUR_APP_SECRET
+firebase functions:config:set kkbox.app_id=YOUR_APP_ID
+firebase functions:config:set kkbox.secret=YOUR_APP_SECRET
 ```
 
 ## 部署
