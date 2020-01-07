@@ -68,7 +68,7 @@ exports.login = functions.https.onRequest(async (req, res) => {
       create_new_token: true
     })
   }).then(async (response) => {
-    return res.redirect(functions.config().kkbox.app_home + '/login?token=' + response.data.access_token);
+    return res.redirect(functions.config().kkbox.app_home + '/#/?token=' + response.data.access_token);
   }).catch(err => {
     res.send('error: ' + err);
   })
