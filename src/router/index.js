@@ -12,6 +12,11 @@ const routes = [
     component: Home,
   },
   {
+    path: '/login',
+    name: 'login',
+    component: Home,
+  },
+  {
     path: '/songRequest/:id',
     name: 'songRequest',
     component: songRequest,
@@ -27,6 +32,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes,
 });
 
