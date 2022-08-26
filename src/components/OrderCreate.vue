@@ -6,7 +6,13 @@
         <div class="col-md-6 bg-light p-3 h-100">
           <div class="row justify-content-between align-items-center">
             <div class="col-md-5">
-              <h4>華語單曲日榜</h4>
+              <h4 v-if="userToken == ''">華語單曲日榜</h4>
+              <div class="form-group" v-else>
+                <label for="exampleFormControlSelect1">我的歌單</label>
+                <select class="form-control" id="exampleFormControlSelect1" v-model="playListId">
+                  <option v-for="(d, index) in playListDropdown" :key="index" :value="d.id">{{ d.title }}</option>
+                </select>
+               </div>
             </div>
             <div class="col-md-5">
               <div class="input-group mb-3">
@@ -51,6 +57,7 @@
         </div>
         <div class="col-md-6">
           <p v-if="search !== ''">搜尋結果: {{searchResultCount}} 筆</p>
+          <p class="text-center" v-if="tracks.length === 0">此歌單沒有歌曲</p>
           <SongList :tracks="tracks" @orderSong="orderSongData"></SongList>
         </div>
       </div>
@@ -64,89 +71,117 @@
 </template>
 
 <script>
-  import SongList from './SongList.vue'
-  export default {
-    name: 'OrderCreate',
-    components: {
-      SongList,
-    },
-    data() {
-      return {
-        tracks: [],
-        request: {
-          name: '',
-          toName: '',
-          message: '',
-          songInfo: {
-            songID: '',
-            songName: '',
-            songPic: '',
-            singer: '',
-          },
-          isPlay: false,
+import SongList from './SongList.vue';
+
+export default {
+  name: 'OrderCreate',
+  props: ['userToken'],
+  components: {
+    SongList,
+  },
+  data() {
+    return {
+      tracks: [],
+      request: {
+        name: '',
+        toName: '',
+        message: '',
+        songInfo: {
+          songID: '',
+          songName: '',
+          songPic: '',
+          singer: '',
         },
-        search: '',
-        searchResult: [],
-        searchResultCount: 0,
-      }
-    },
-    methods: {
-      getHotMusic() {
-        const vm = this;
-        vm.axios.get(`https://api.kkbox.com/v1.1/charts/PYQbSKw4piAuZAS8z8?territory=TW`).then((response) => {
-          vm.tracks = response.data.tracks.data;
-        })
+        isPlay: false,
       },
-      orderSongData(value) {
-        const vm = this;
-        vm.request.songInfo = value;
-      },
-      searchTrack() {
-        const vm = this;
-        vm.axios.get(`https://api.kkbox.com/v1.1/search?q=${vm.search}&type=artist,track&territory=TW`).then((response) => {
-          vm.tracks = response.data.tracks.data;
-          vm.searchResultCount = response.data.summary.total;
-        })
-      },
-      submitRequestSong() {
-        const vm = this;
-        vm.$bus.$emit('message', '點播成功', vm.request.name);
-        db.ref('requestSongs').push().set(vm.request);
-        vm.request = {
-          name: '',
-          toName: '',
-          message: '',
-          songInfo: {
-            songID: '',
-            songName: '',
-            songPic: '',
-            singer: '',
-          },
-          isPlay: false,
-        };
-        window.scrollTo(0, 0);
-      },
-      slideToBottom(status) {
-        if (status) {
-          const createEleH = document.getElementById('create').offsetTop;
-          window.scrollTo({ left: 0, top: createEleH, behavior: "smooth" });
-        }
-      }
-    },
-    watch: {
-      search(val) {
-        const vm = this;
-        if (val == '') {
-          vm.searchResult = [];
-        }
-      }
-    },
-    mounted() {
+      search: '',
+      searchResult: [],
+      searchResultCount: 0,
+      userPlayListName: '',
+      playListDropdown: [],
+      playListId: '',
+    };
+  },
+  methods: {
+    getHotMusic() {
       const vm = this;
-      this.getHotMusic();
-      vm.$bus.$on('slideToCreate', (status) => {
-        vm.slideToBottom(status);
+      vm.axios.get('https://api.kkbox.com/v1.1/charts/PYQbSKw4piAuZAS8z8?territory=TW').then((response) => {
+        vm.tracks = response.data.tracks.data;
       });
+    },
+    getMyMusic() {
+      const vm = this;
+      vm.axios.get('https://api.kkbox.com/v1.1/me/playlists', { headers: { Authorization: `Bearer ${vm.userToken}` } }).then((response) => {
+        vm.playListDropdown = response.data.data;
+        vm.playListId = response.data.data[0].id;
+      });
+    },
+    getMyPlayList(id) {
+      const vm = this;
+      vm.axios.get(`https://api.kkbox.com/v1.1/me/playlists/${id}`, { headers: { Authorization: `Bearer ${vm.userToken}` } }).then((response) => {
+        vm.tracks = response.data.tracks.data;
+        vm.userPlayListName = response.data.title;
+      });
+    },
+    orderSongData(value) {
+      const vm = this;
+      vm.request.songInfo = value;
+    },
+    searchTrack() {
+      const vm = this;
+      vm.axios.get(`https://api.kkbox.com/v1.1/search?q=${vm.search}&type=artist,track&territory=TW`).then((response) => {
+        vm.tracks = response.data.tracks.data;
+        vm.searchResultCount = response.data.summary.total;
+      });
+    },
+    submitRequestSong() {
+      const vm = this;
+      vm.$bus.$emit('message', '點播成功', `${vm.request.name}，你的點播送出了！`);
+      db.ref('requestSongs').push().set(vm.request);
+      vm.request = {
+        name: '',
+        toName: '',
+        message: '',
+        songInfo: {
+          songID: '',
+          songName: '',
+          songPic: '',
+          singer: '',
+        },
+        isPlay: false,
+      };
+      window.scrollTo(0, 0);
+    },
+    slideToBottom(status) {
+      if (status) {
+        const createEleH = document.getElementById('create').offsetTop;
+        window.scrollTo({ left: 0, top: createEleH, behavior: 'smooth' });
+      }
+    },
+  },
+  watch: {
+    playListId(val) {
+      const vm = this;
+      vm.getMyPlayList(val);
+    },
+    search(val) {
+      const vm = this;
+      if (val == '') {
+        vm.searchResult = [];
+      }
+    },
+  },
+  mounted() {
+    const vm = this;
+    vm.$bus.$on('slideToCreate', (status) => {
+      vm.slideToBottom(status);
+    });
+    console.log('vm.userToken', vm.userToken);
+    if (vm.userToken && vm.userToken !== '') {
+      vm.getMyMusic();
+    } else {
+      vm.getHotMusic();
     }
-  };
+  },
+};
 </script>

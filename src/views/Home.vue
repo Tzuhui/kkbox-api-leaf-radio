@@ -4,7 +4,7 @@
     <PlayArea msg="Welcome to Your Vue.js App" :data="requestSongsList" :load="dataLoad" />
     <OrderList :data="requestSongsList" />
     <OrderHot :data="recordList"/>
-    <OrderCreate/>
+    <OrderCreate :user-token="userToken"/>
     <footer class="bg-dark p-3">
       <div class="container clearfix">
         <p class="text-white mb-0 float-left">@Leaf Radio</p>
@@ -37,13 +37,14 @@ export default {
       requestSongsList: [],
       recordList: [],
       dataLoad: false,
-    }
+      userToken: '',
+    };
   },
   methods: {
     getSongsData() {
       const vm = this;
       const readData = db.ref('requestSongs');
-      readData.orderByChild('isPlay').equalTo(false).on('value', function(snapshot) {
+      readData.orderByChild('isPlay').equalTo(false).on('value', (snapshot) => {
         vm.requestSongsList = [];
         if (snapshot.val()) {
           Object.keys(snapshot.val()).forEach(ele => {
@@ -59,18 +60,27 @@ export default {
     getSongsRecord() {
       const vm = this;
       const readData = db.ref('record');
-      readData.orderByChild('times').on('value', function(snapshot) {
+      readData.orderByChild('times').on('value', (snapshot) => {
         if (snapshot.val()) {
           Object.keys(snapshot.val()).forEach(ele => {
             vm.recordList.push(snapshot.val()[ele]);
           })
         }
       });
-    }
+    },
   },
   mounted() {
     this.getSongsData();
     this.getSongsRecord();
-  }
+  },
+  created() {
+    const vm = this;
+    if (vm.$route.query.token) {
+      vm.userToken = this.$route.query.token;
+      setTimeout(() => {
+        vm.$bus.$emit('message', '登入成功，可以點播自己的歌單囉～', 'KKBOX 用戶登入成功，可以點播自己的歌單囉～');
+      }, 2000);
+    }
+  },
 };
 </script>

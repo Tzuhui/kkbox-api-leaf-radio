@@ -1,6 +1,7 @@
 <template>
   <div>
     <loading :active.sync="isLoading"></loading>
+    <a href="https://us-central1-linebot-f2c38.cloudfunctions.net/kkUser" class="btn btn-lg btn-primary rounded-pill position-absolute" style="z-index: 1000; right: 10px; top:10px;" :class="{'disabled': userToken != ''}">{{ userToken != ''? '已登入': '登入 KKBOX'}}</a>
     <div class="position-relative playArea" style="overflow: hidden;">
       <div class="position-absolute" style="top:0;bottom:0;left:0;right:0;filter: blur(10px); min-height: 550px; background: no-repeat center center; background-size: cover;box-shadow:0 0 0 0 rgba(0,150,200,1),inset 0 0 0 1px rgba(0,150,200,1);"
       :style="{'background-image': 'url(' + messageInfo.songInfo.songPic + ')'}"></div>
@@ -61,6 +62,7 @@
 <script>
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
   name: 'PlayArea',
   props: ['data', 'load'],
@@ -79,19 +81,20 @@ export default {
           singer: '',
           songName: '',
           songPic: '',
-        }
-      }
-    }
+        },
+      },
+      userToken: '',
+    };
   },
   methods: {
     getHotMusic() {
       const vm = this;
-      return new Promise((resolve,reject) => {
-        vm.axios.get(`https://api.kkbox.com/v1.1/charts/PYQbSKw4piAuZAS8z8?territory=TW`).then((response) => {
+      return new Promise((resolve, reject) => {
+        vm.axios.get('https://api.kkbox.com/v1.1/charts/PYQbSKw4piAuZAS8z8?territory=TW').then((response) => {
           vm.tracks = response.data.tracks.data;
-          resolve('get')
-        })
-      })
+          resolve('get');
+        });
+      });
     },
     playNextMusic() {
       const vm = this;
@@ -105,7 +108,7 @@ export default {
     playRandomMusic() {
       const vm = this;
       vm.now = 'random';
-      const num = Math.floor(Math.random()*vm.tracks.length);
+      const num = Math.floor(Math.random() * vm.tracks.length);
       const trackID = vm.tracks[num].id;
       vm.messageInfo.id = '';
       vm.messageInfo.songInfo.songPic = vm.tracks[num].album.images[1].url;
@@ -117,7 +120,7 @@ export default {
       const vm = this;
       if (vm.musicList.length > 0) {
         const nowSongID = '';
-        db.ref('requestSongs/' + vm.messageInfo.id).set({
+        db.ref(`requestSongs/${vm.messageInfo.id}`).set({
           ...vm.musicList[0],
           id: vm.messageInfo.id,
           isPlay: true,
@@ -127,24 +130,24 @@ export default {
     },
     countDown() {
       const bar = document.querySelector('#bar');
-      let timeLimit = "30s";
+      const timeLimit = '30s';
       bar.style.animationDuration = timeLimit;
     },
     slideBottom() {
       const vm = this;
       vm.$bus.$emit('slideToCreate', true);
-    }
+    },
   },
   computed: {
     musicList() {
-      return this.data
-    }
+      return this.data;
+    },
   },
   watch: {
     load(value) {
       if (value) {
         const vm = this;
-        vm.getHotMusic().then(res => {
+        vm.getHotMusic().then((res) => {
           if (res == 'get') {
             vm.isLoading = false;
             if (vm.musicList.length == 0) {
@@ -153,7 +156,7 @@ export default {
               vm.playNextMusic();
             }
             vm.countDown();
-            setInterval(function() {
+            setInterval(() => {
               if (vm.now == 'play') {
                 vm.nowMusicOver();
               }
@@ -162,16 +165,19 @@ export default {
               } else {
                 vm.playNextMusic();
               }
-            }, 30000)
+            }, 30000);
           }
         });
       }
-    }
+    },
   },
   mounted() {
     const vm = this;
     document.getElementById('videoplayer').meted = false;
-  }
+    if (vm.$route.query.token) {
+      vm.userToken = this.$route.query.token;
+    }
+  },
 };
 </script>
 
@@ -179,4 +185,3 @@ export default {
 
 
 </style>
-
