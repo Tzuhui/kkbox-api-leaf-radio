@@ -171,6 +171,7 @@ export default {
             }
             vm.countDown();
             setInterval(() => {
+              vm.countDown();
               if (vm.now == 'play') {
                 vm.nowMusicOver();
               }
