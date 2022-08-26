@@ -6,12 +6,21 @@
       <div class="position-absolute" style="top:0;bottom:0;left:0;right:0;filter: blur(10px); min-height: 550px; background: no-repeat center center; background-size: cover;box-shadow:0 0 0 0 rgba(0,150,200,1),inset 0 0 0 1px rgba(0,150,200,1);"
       :style="{'background-image': 'url(' + messageInfo.songInfo.songPic + ')'}"></div>
       <div class="position-absolute" style="background: rgba(40, 48, 89, 0.7); left: 0; right: 0;top: 0;bottom: 0;"></div>
-      <div class="container position-absolute" style="top: 50%; left:50%; transform: translate(-50%, -50%);">
-        <div class="row justify-content-center">
+      <div class="container position-absolute" style="top: 50%; left:50%; transform: translate(-50%, -50%); z-index: 3">
+        <div v-show="start == false">
+          <div class="bg-dark py-3 col-md-5 mx-auto">
+            <h4 class="text-white">請先點擊 iframe 播放鍵並確認完成</h4>
+            <div id="play-area" class="w-100" style="bottom: -10px; height: 100px; overflow: hidden;">
+              <iframe src="" id="videoplayer" class="w-100 border-0" allow="autoplay" meted="meted" ></iframe>
+            </div>
+            <button class="btn btn-primary mt-3" @click="start = true">完成</button>
+          </div>
+        </div>
+        <div v-show="start" class="row justify-content-center">
           <div class="col-md-4">
             <div class="p-3" style="background: white;">
               <img :src="messageInfo.songInfo.songPic" alt="" class="img-fluid">
-              <div class="timer mt-3">
+              <div class="timer mt-3" v-show="false">
                 <div id="bar" class="bar"></div>
               </div>
               <div class="d-md-none d-block">
@@ -26,6 +35,9 @@
               </div>
               <p class="mb-0 mt-2"># {{ messageInfo.songInfo.songName }}</p>
               <p class="mb-0"># {{ messageInfo.songInfo.singer }}</p>
+              <!-- <div id="play-area" class="w-100" style="bottom: -10px; height: 100px; overflow: hidden; opacity: 0;">
+                <iframe src="" id="videoplayer" class="w-100 border-0" allow="autoplay" meted="meted" ></iframe>
+              </div> -->
             </div>
           </div>
           <div class="col-md-6 d-md-block d-none">
@@ -52,9 +64,6 @@
           </div>
         </div>
       </div>
-      <div id="play-area" class="position-absolute w-100" style="bottom: -10px;">
-        <iframe src="" id="videoplayer" class="w-100 border-0" allow="autoplay" meted="meted" style="z-index: -1; position: relative;"></iframe>
-      </div>
     </div>
   </div>
 </template>
@@ -69,6 +78,7 @@ export default {
   data() {
     return {
       now: '',
+      start: false,
       isLoading: true,
       loadFinish: this.load,
       tracks: [],
@@ -87,6 +97,10 @@ export default {
     };
   },
   methods: {
+    openSound() {
+      console.log(document.querySelector('#play-area iframe'));
+      document.querySelector('#play-area iframe').play();
+    },
     getHotMusic() {
       const vm = this;
       return new Promise((resolve, reject) => {
@@ -114,7 +128,7 @@ export default {
       vm.messageInfo.songInfo.songPic = vm.tracks[num].album.images[1].url;
       vm.messageInfo.songInfo.songName = vm.tracks[num].name;
       vm.messageInfo.songInfo.singer = vm.tracks[num].album.artist.name;
-      window.frames[0].location = `https://widget.kkbox.com/v1/?id=${trackID}&type=song&terr=TW&lang=TC&autoplay=true`;
+      window.frames[0].location = `https://widget.kkbox.com/v1/?id=${trackID}&type=song&terr=TW&lang=TC&autoplay=1`;
     },
     nowMusicOver() {
       const vm = this;
