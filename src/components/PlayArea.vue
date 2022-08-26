@@ -20,7 +20,7 @@
           <div class="col-md-4">
             <div class="p-3" style="background: white;">
               <img :src="messageInfo.songInfo.songPic" alt="" class="img-fluid">
-              <div class="timer mt-3" v-show="false">
+              <div class="timer mt-3">
                 <div id="bar" class="bar"></div>
               </div>
               <div class="d-md-none d-block">
