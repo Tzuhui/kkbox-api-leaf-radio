@@ -23,15 +23,15 @@
     "vuefire": "^2.2.5"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.19",
-    "@vue/cli-plugin-eslint": "^4.5.19",
-    "@vue/cli-service": "^4.5.19",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "sass": "^1.54.5",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^13.2.0",
     "vue-template-compiler": "^2.7.10"
   },
   "eslintConfig": {
